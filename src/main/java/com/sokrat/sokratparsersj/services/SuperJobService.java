@@ -30,7 +30,7 @@ public class SuperJobService {
     public String sendCode(String code) throws IOException, URISyntaxException {
 
       StringBuffer content = new StringBuffer();
-      String strurl = String.format("$api/vacancies/?catalogues=33", env.getProperty("SJ_API"));
+      String strurl = String.format("%s/vacancies/?catalogues=33", env.getProperty("SJ_API"));
       URL url = new URL(strurl);
       HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
       con.setRequestMethod("GET");

@@ -67,6 +67,17 @@
 			<version>2.1</version>
 			<scope>provided</scope>
 		</dependency>
+                <dependency>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                    <version>3.0.1</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.json</groupId>
+                    <artifactId>json</artifactId>
+                    <version>20151123</version>
+                </dependency>
 	</dependencies>
 
 	<repositories>

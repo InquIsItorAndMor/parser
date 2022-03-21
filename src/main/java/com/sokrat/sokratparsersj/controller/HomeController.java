@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
@@ -28,7 +29,9 @@ public class HomeController {
         Map data = new HashMap();
         try {
             resp = serviceSJ.sendCode("123");
-            data.put("sj", resp);
+            JSONObject jsonObject = new JSONObject(resp);
+            
+            data.put("sj", jsonObject.toString());
 
         } catch (URISyntaxException ex) {
             Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
