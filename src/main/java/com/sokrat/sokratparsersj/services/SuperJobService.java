@@ -5,6 +5,7 @@
  */
 package com.sokrat.sokratparsersj.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,6 +17,9 @@ import javax.net.ssl.HttpsURLConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.sokrat.sokratparsersj.models.Vacancie;
+import com.sokrat.sokratparsersj.models.VacancieList;
 
 /**
  *
@@ -27,10 +31,10 @@ public class SuperJobService {
     @Autowired
     Environment env;
     
-    public String sendCode(String code) throws IOException, URISyntaxException {
+    public String sendCode(Integer catalogId, Integer numberPage) throws IOException, URISyntaxException {
 
       StringBuffer content = new StringBuffer();
-      String strurl = String.format("%s/vacancies/?catalogues=33", env.getProperty("SJ_API"));
+      String strurl = String.format("%s/vacancies/?catalogues=%s&count=100&page=%s", env.getProperty("SJ_API"), catalogId, numberPage);
       URL url = new URL(strurl);
       HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
       con.setRequestMethod("GET");
@@ -46,6 +50,10 @@ public class SuperJobService {
           }
       }
       con.disconnect();
+      ObjectMapper mapper = new ObjectMapper();
+      mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+        VacancieList v = null;
+      v = mapper.readValue(content.toString(), VacancieList.class);
 
       return content.toString();
     }

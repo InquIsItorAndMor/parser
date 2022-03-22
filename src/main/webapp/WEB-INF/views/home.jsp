@@ -13,6 +13,6 @@
         <h1>Hello World!</h1>
         <p>This is the homepage!</p>
         <input type="button" value="Start" onclick='testtest(${sj});' />
-        <p>${sj}</p>
+        <p>${sj}<script type="text/javascript">console.log(${sj});</script></p>
     </body>
 </html>

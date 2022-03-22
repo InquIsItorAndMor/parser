@@ -28,7 +28,7 @@ public class HomeController {
        String resp = "";
         Map data = new HashMap();
         try {
-            resp = serviceSJ.sendCode("123");
+            resp = serviceSJ.sendCode(33, 1);
             JSONObject jsonObject = new JSONObject(resp);
             
             data.put("sj", jsonObject.toString());
