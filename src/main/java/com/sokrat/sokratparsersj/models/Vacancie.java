@@ -30,25 +30,25 @@ public class Vacancie {
     @JsonProperty(value="firm_activity")
     String firmDescription;
     
-    String getAddress() {
+    public String getAddress() {
         return this.address;
     };
-    String getProfession() {
+    public String getProfession() {
         return this.profession;
     };
-    String getCandidat() {
+    public String getCandidat() {
       return this.candidat;  
     };
-    Integer getMaxPayment() {
+    public Integer getMaxPayment() {
         return this.maxPayment;
     };
-    String getCurrency() {
+    public String getCurrency() {
         return this.currency;
     };
-    String getFirmName() {
+    public String getFirmName() {
         return this.firmName;
     };
-    String getFirmDescription() {
+    public String getFirmDescription() {
         return firmDescription;
     };
 }

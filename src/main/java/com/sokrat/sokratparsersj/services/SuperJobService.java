@@ -5,6 +5,7 @@
  */
 package com.sokrat.sokratparsersj.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,30 +32,35 @@ public class SuperJobService {
     @Autowired
     Environment env;
     
-    public String sendCode(Integer catalogId, Integer numberPage) throws IOException, URISyntaxException {
+    public VacancieList jsonToModal(String json) throws JsonProcessingException {
+        VacancieList vacancies = null;
+        
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+        vacancies = mapper.readValue(json, VacancieList.class);
+        
+        return vacancies;
+    }
+    
+    public StringBuffer getVacanciesFromPage(Integer catalogId, Integer numberPage) throws IOException, URISyntaxException {
 
-      StringBuffer content = new StringBuffer();
-      String strurl = String.format("%s/vacancies/?catalogues=%s&count=100&page=%s", env.getProperty("SJ_API"), catalogId, numberPage);
-      URL url = new URL(strurl);
-      HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
-      con.setRequestMethod("GET");
-      con.setRequestProperty("X-Api-App-Id", env.getProperty("SJ_KEY"));
-      con.setDoOutput(true); 
-      con.setDoInput(true); 
-      con.setRequestProperty("charset", "utf-8");
-      try(BufferedReader in = new BufferedReader(
-          new InputStreamReader(con.getInputStream(), "UTF-8"))) {
-          String inputLine;
-          while ((inputLine = in.readLine()) != null) {
-              content.append(inputLine);
-          }
-      }
-      con.disconnect();
-      ObjectMapper mapper = new ObjectMapper();
-      mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-        VacancieList v = null;
-      v = mapper.readValue(content.toString(), VacancieList.class);
-
-      return content.toString();
+        StringBuffer content = new StringBuffer();
+        String strurl = String.format("%s/vacancies/?catalogues=%s&count=100&page=%s", env.getProperty("SJ_API"), catalogId, numberPage);
+        URL url = new URL(strurl);
+        HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
+        con.setRequestMethod("GET");
+        con.setRequestProperty("X-Api-App-Id", env.getProperty("SJ_KEY"));
+        con.setDoOutput(true); 
+        con.setDoInput(true); 
+        con.setRequestProperty("charset", "utf-8");
+        try(BufferedReader in = new BufferedReader(
+            new InputStreamReader(con.getInputStream(), "UTF-8"))) {
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                content.append(inputLine);
+            }
+        }
+        con.disconnect();
+        return content;
     }
 }

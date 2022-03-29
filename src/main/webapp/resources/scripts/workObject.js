@@ -5,7 +5,7 @@
  */
 
 function testtest(text) {
-    $.ajax({
+    /*$.ajax({
         url: 'test',
         type: "POST",
         data: { text: text.objects[0].client.description },
@@ -15,6 +15,8 @@ function testtest(text) {
         error: function(err) {
             console.error(err);
         }
-    })
+    })*/
+    console.warn(text);
+    console.log(JSON.parse(text));
 }
 
