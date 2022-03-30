@@ -5,6 +5,8 @@
  */
 package com.sokrat.sokratparsersj.util;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.gson.Gson;
 import com.sokrat.sokratparsersj.models.Vacancie;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,7 +22,9 @@ import org.springframework.core.env.Environment;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
@@ -49,47 +53,55 @@ public class Excel {
     
     public void writeIntoExcel( List<Vacancie> vacancies) throws FileNotFoundException, IOException, Exception{
         copyFile();
-        FileInputStream file = new FileInputStream(new File(env.getProperty("PATH_SAVE_EXCEL") + "\\123.xlsx"));
-        Workbook book = new XSSFWorkbook(file);
-        //Workbook book = new HSSFWorkbook();
-        Sheet sheet = book.getSheetAt(0);
+        try(FileInputStream file = new FileInputStream(new File(env.getProperty("PATH_SAVE_EXCEL") + "\\123.xlsx"))) {
+            Workbook book = new XSSFWorkbook(file);
 
-        // Нумерация начинается с нуля
-        //Row row = sheet.createRow(0);
+            //Workbook book = new HSSFWorkbook();
+            Sheet sheet = book.getSheetAt(0);
 
-        // Мы запишем имя и дату в два столбца
-        // имя будет String, а дата рождения --- Date,
-        // формата dd.mm.yyyy
-        Integer countCell = Integer.parseInt(env.getProperty("COUNT_CELL_EXCEL"));
-        for(int indexVacancie = 0; indexVacancie < vacancies.size(); indexVacancie++) {
-            Row row = sheet.getRow(indexVacancie);
-            List<String> vacancie = vacancies.get(indexVacancie).getObjectToArray();
-            for(int indexCell = 0; indexCell < countCell - 1; indexCell++) {
-                Cell cell = row.getCell(indexCell);
-                cell.setCellValue(vacancie.get(indexCell));
-            }
+            // Нумерация начинается с нуля
+            //Row row = sheet.createRow(0);
+
+            // Мы запишем имя и дату в два столбца
+            // имя будет String, а дата рождения --- Date,
+            // формата dd.mm.yyyy
+            String str = env.getProperty("COUNT_CELL_EXCEL");
+            ArrayList<String> countCell = (new Gson()).fromJson(env.getProperty("COUNT_CELL_EXCEL"), ArrayList.class) ;
+            try{
+                short height = 14;
+                sheet.setDefaultRowHeight(height);
+                for(int indexVacancie = 1; indexVacancie < vacancies.size(); indexVacancie++) {
+                    Row row = sheet.createRow(indexVacancie);
+                    List<String> vacancie = vacancies.get(indexVacancie - 1).getObjectToArray();
+                    for(int indexCell = 0; indexCell < countCell.size(); indexCell++) {
+                        Cell cell = row.createCell(CellReference.convertColStringToIndex(countCell.get(indexCell)));
+                        cell.getCellStyle().setWrapText(true);
+                        cell.setCellValue(vacancie.get(indexCell));
+                    }
+                }
+            } catch(Exception ex) {}
+
+
+          /*  Cell name = row.getCell(0);
+            name.setCellValue("John");
+
+            Cell birthdate = row.createCell(1);
+
+            DataFormat format = book.createDataFormat();
+            CellStyle dateStyle = book.createCellStyle();
+            dateStyle.setDataFormat(format.getFormat("dd.mm.yyyy"));
+            birthdate.setCellStyle(dateStyle);
+
+
+            // Нумерация лет начинается с 1900-го
+            birthdate.setCellValue(new Date(110, 10, 10));
+
+            // Меняем размер столбца
+            sheet.autoSizeColumn(1);*/
+
+            // Записываем всё в файл
+            book.write(new FileOutputStream(env.getProperty("PATH_SAVE_EXCEL") + "\\123.xlsx"));
+            book.close();
         }
-        
-        
-      /*  Cell name = row.getCell(0);
-        name.setCellValue("John");
-
-        Cell birthdate = row.createCell(1);
-
-        DataFormat format = book.createDataFormat();
-        CellStyle dateStyle = book.createCellStyle();
-        dateStyle.setDataFormat(format.getFormat("dd.mm.yyyy"));
-        birthdate.setCellStyle(dateStyle);
-
-
-        // Нумерация лет начинается с 1900-го
-        birthdate.setCellValue(new Date(110, 10, 10));
-
-        // Меняем размер столбца
-        sheet.autoSizeColumn(1);*/
-
-        // Записываем всё в файл
-        book.write(new FileOutputStream(env.getProperty("PATH_TEMPLATE_EXCEL")));
-        book.close();
     }
 }
