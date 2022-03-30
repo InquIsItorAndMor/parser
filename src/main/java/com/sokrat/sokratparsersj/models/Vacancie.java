@@ -7,6 +7,8 @@ package com.sokrat.sokratparsersj.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -51,4 +53,15 @@ public class Vacancie {
     public String getFirmDescription() {
         return firmDescription;
     };
+    
+    public List<String> getObjectToArray() {
+        List<String> arrayStr = new ArrayList<String>();
+        arrayStr.add(this.profession);
+        arrayStr.add(this.address);
+        arrayStr.add(this.candidat);
+        arrayStr.add(this.maxPayment.toString() + " " + this.currency);
+        arrayStr.add(this.firmName);
+        arrayStr.add(this.firmDescription);
+        return arrayStr;
+    }
 }
