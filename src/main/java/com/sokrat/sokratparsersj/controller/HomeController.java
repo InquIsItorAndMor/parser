@@ -22,6 +22,8 @@ import org.springframework.core.env.Environment;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -62,5 +64,32 @@ public class HomeController {
             Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return new ModelAndView("home", data);
+    }
+    
+    @RequestMapping(value="/getAllVacancie", method = RequestMethod.GET,  produces = "text/plain;charset=UTF-8")
+    @ResponseBody
+    public String getAllVacancie(@RequestParam(value = "category") String category) throws IOException, Exception{
+        String resp = "";
+        String json = "[{}]";
+        List<Vacancie> vacancies = new ArrayList<Vacancie>();
+        Integer pageNumber = 1;
+        try {
+            while(true) {
+                resp = serviceSJ.getVacanciesFromPage(Integer.parseInt(category), pageNumber).toString();
+                VacancieList vList = serviceSJ.jsonToModal(resp);
+                vacancies.addAll(vList.getObjects());
+                if(!vList.getMore()) {
+                    break;
+                } else {
+                    pageNumber++;   
+                }
+            }
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+            json = ow.writeValueAsString(vacancies);
+
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return json;
     }
 }
