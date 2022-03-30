@@ -39,6 +39,5 @@ public class VacancieList {
         Gson gson = new Gson();
         String json = gson.toJson(value);
         this.objects = mapper.readValue(json, new TypeReference<ArrayList<Vacancie>>(){});
-      //System.out.print(value.toString());
     }
 }

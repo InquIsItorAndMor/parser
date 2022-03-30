@@ -1,5 +1,7 @@
 package com.sokrat.sokratparsersj.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.gson.Gson;
 import com.sokrat.sokratparsersj.models.Vacancie;
 import com.sokrat.sokratparsersj.models.VacancieList;
@@ -52,8 +54,9 @@ public class HomeController {
             }
             
             excel.writeIntoExcel(vacancies);
-            Gson gson = new Gson();
-            data.put("sj", gson.toJson(vacancies));
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+            String json = ow.writeValueAsString(vacancies);
+            data.put("sj", json);
 
         } catch (URISyntaxException ex) {
             Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
