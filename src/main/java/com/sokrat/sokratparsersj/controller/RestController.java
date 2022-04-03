@@ -3,10 +3,12 @@ package com.sokrat.sokratparsersj.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.gson.Gson;
+import com.sokrat.sokratparsersj.models.Catalogues;
 import com.sokrat.sokratparsersj.models.Vacancie;
 import com.sokrat.sokratparsersj.models.VacancieList;
 import com.sokrat.sokratparsersj.services.SuperJobService;
 import com.sokrat.sokratparsersj.util.Excel;
+import com.sokrat.sokratparsersj.util.JsonModal;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -28,10 +30,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-public class HomeController {
+public class RestController {
 
     @Autowired
     SuperJobService serviceSJ;
+    
+    @Autowired
+    JsonModal jsonModal;
     
     @Autowired
     Environment env;
@@ -46,7 +51,7 @@ public class HomeController {
         try {
             while(true) {
                 resp = serviceSJ.getVacanciesFromPage(33, pageNumber).toString();
-                VacancieList vList = serviceSJ.jsonToModal(resp);
+                VacancieList vList = jsonModal.jsonToModalVacancieList(resp);
                 vacancies.addAll(vList.getObjects());
                 if(!vList.getMore()) {
                     break;
@@ -61,7 +66,7 @@ public class HomeController {
             data.put("sj", json);
 
         } catch (URISyntaxException ex) {
-            Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RestController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return new ModelAndView("home", data);
     }
@@ -71,12 +76,12 @@ public class HomeController {
     public String getAllVacancie(@RequestParam(value = "category") String category) throws IOException, Exception{
         String resp = "";
         String json = "[{}]";
-        List<Vacancie> vacancies = new ArrayList<Vacancie>();
+        List<Vacancie> vacancies = new ArrayList<>();
         Integer pageNumber = 1;
         try {
             while(true) {
                 resp = serviceSJ.getVacanciesFromPage(Integer.parseInt(category), pageNumber).toString();
-                VacancieList vList = serviceSJ.jsonToModal(resp);
+                VacancieList vList = jsonModal.jsonToModalVacancieList(resp);
                 vacancies.addAll(vList.getObjects());
                 if(!vList.getMore()) {
                     break;
@@ -88,7 +93,26 @@ public class HomeController {
             json = ow.writeValueAsString(vacancies);
 
         } catch (URISyntaxException ex) {
-            Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RestController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return json;
+    }
+    
+    @RequestMapping(value="/getAllCatalogues", method = RequestMethod.GET,  produces = "text/plain;charset=UTF-8")
+    @ResponseBody
+    public String getAllCatalogues() throws IOException, Exception{
+        String resp = "";
+        String json = "[{}]";
+        List<Catalogues> catalogues = new ArrayList<>();
+        
+        try {
+            resp = serviceSJ.getCatalogues().toString();
+            catalogues = jsonModal.jsonToModalCatalogues(resp);             
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+            json = ow.writeValueAsString(catalogues);
+
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(RestController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return json;
     }
