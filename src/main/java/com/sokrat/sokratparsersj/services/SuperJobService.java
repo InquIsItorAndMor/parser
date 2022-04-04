@@ -5,23 +5,15 @@
  */
 package com.sokrat.sokratparsersj.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.sokrat.sokratparsersj.models.Vacancie;
-import com.sokrat.sokratparsersj.models.VacancieList;
-import java.net.MalformedURLException;
 
 /**
  *

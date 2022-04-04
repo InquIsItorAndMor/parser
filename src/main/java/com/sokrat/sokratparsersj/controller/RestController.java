@@ -2,7 +2,6 @@ package com.sokrat.sokratparsersj.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.google.gson.Gson;
 import com.sokrat.sokratparsersj.models.Catalogues;
 import com.sokrat.sokratparsersj.models.DownloadFile;
 import com.sokrat.sokratparsersj.models.Vacancie;
@@ -11,17 +10,13 @@ import com.sokrat.sokratparsersj.services.Download;
 import com.sokrat.sokratparsersj.services.SuperJobService;
 import com.sokrat.sokratparsersj.util.Excel;
 import com.sokrat.sokratparsersj.util.JsonModal;
-import com.sun.swing.internal.plaf.metal.resources.metal;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
@@ -32,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping(value="/rest")

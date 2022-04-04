@@ -5,7 +5,6 @@
  */
 package com.sokrat.sokratparsersj.util;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.gson.Gson;
 import com.sokrat.sokratparsersj.models.DownloadFile;
 import com.sokrat.sokratparsersj.models.Vacancie;
@@ -13,7 +12,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.List;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;

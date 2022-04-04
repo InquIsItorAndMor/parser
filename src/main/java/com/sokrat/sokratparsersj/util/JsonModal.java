@@ -10,7 +10,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sokrat.sokratparsersj.models.Catalogues;
-import com.sokrat.sokratparsersj.models.Vacancie;
 import com.sokrat.sokratparsersj.models.VacancieList;
 import java.util.ArrayList;
 import org.springframework.stereotype.Component;
