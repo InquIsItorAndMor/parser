@@ -4,11 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.gson.Gson;
 import com.sokrat.sokratparsersj.models.Catalogues;
+import com.sokrat.sokratparsersj.models.DownloadFile;
 import com.sokrat.sokratparsersj.models.Vacancie;
 import com.sokrat.sokratparsersj.models.VacancieList;
+import com.sokrat.sokratparsersj.services.Download;
 import com.sokrat.sokratparsersj.services.SuperJobService;
 import com.sokrat.sokratparsersj.util.Excel;
 import com.sokrat.sokratparsersj.util.JsonModal;
+import com.sun.swing.internal.plaf.metal.resources.metal;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -21,6 +24,8 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
+@RequestMapping(value="/rest")
 public class RestController {
 
     @Autowired
@@ -41,11 +47,12 @@ public class RestController {
     @Autowired
     Environment env;
     
-    @RequestMapping(value="/")
-    public ModelAndView test(HttpServletResponse response) throws IOException, Exception{
+    @RequestMapping(value="/downloadExcel", method = RequestMethod.GET)
+    public ResponseEntity<Resource> downloadExcel(@RequestParam(value = "category") String category) 
+            throws IOException, Exception{
         String resp = "";
-        Map data = new HashMap();
-        List<Vacancie> vacancies = new ArrayList<Vacancie>();
+        DownloadFile dFile = null;
+        List<Vacancie> vacancies = new ArrayList<>();
         Integer pageNumber = 1;
         Excel excel = new Excel(env);
         try {
@@ -60,15 +67,13 @@ public class RestController {
                 }
             }
             
-            excel.writeIntoExcel(vacancies);
-            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-            String json = ow.writeValueAsString(vacancies);
-            data.put("sj", json);
+            dFile = excel.writeIntoExcel(vacancies, category);
 
         } catch (URISyntaxException ex) {
             Logger.getLogger(RestController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return new ModelAndView("home", data);
+        
+        return new Download(dFile).download();
     }
     
     @RequestMapping(value="/getAllVacancie", method = RequestMethod.GET,  produces = "text/plain;charset=UTF-8")
