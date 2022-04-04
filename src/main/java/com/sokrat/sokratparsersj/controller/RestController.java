@@ -57,7 +57,7 @@ public class RestController {
         Excel excel = new Excel(env);
         try {
             while(true) {
-                resp = serviceSJ.getVacanciesFromPage(33, pageNumber).toString();
+                resp = serviceSJ.getVacanciesFromPage(Integer.parseInt(category), pageNumber).toString();
                 VacancieList vList = jsonModal.jsonToModalVacancieList(resp);
                 vacancies.addAll(vList.getObjects());
                 if(!vList.getMore()) {
